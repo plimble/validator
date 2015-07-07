@@ -39,6 +39,9 @@ func (m *MockValidator) GetError() error {
 func (m *MockValidator) RequiredString(val string, err error, name ...string) {
 	m.Called(val, err, name)
 }
+func (m *MockValidator) RequiredBytes(val []byte, err error, name ...string) {
+	m.Called(val, err, name)
+}
 func (m *MockValidator) RequiredInt(val int, err error, name ...string) {
 	m.Called(val, err, name)
 }

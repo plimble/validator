@@ -24,6 +24,7 @@ type Validator interface {
 	Messages() map[string]string
 	GetError() error
 	RequiredString(val string, err error, name ...string)
+	RequiredBytes(val []byte, err error, name ...string)
 	RequiredInt(val int, err error, name ...string)
 	RequiredFloat64(val float64, err error, name ...string)
 	RequiredBool(val bool, err error, name ...string)
@@ -92,6 +93,12 @@ func (v *validator) addError(err error, name []string) {
 
 func (v *validator) RequiredString(val string, err error, name ...string) {
 	if len(strings.TrimSpace(val)) == 0 {
+		v.addError(err, name)
+	}
+}
+
+func (v *validator) RequiredBytes(val []byte, err error, name ...string) {
+	if len(val) == 0 {
 		v.addError(err, name)
 	}
 }
