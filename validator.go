@@ -24,25 +24,25 @@ type Validator interface {
 	HasError() bool
 	Messages() map[string]string
 	GetError() error
-	RequiredString(val string, name string, err error)
-	RequiredBytes(val []byte, name string, err error)
-	RequiredInt(val int, name string, err error)
-	RequiredFloat64(val float64, name string, err error)
-	RequiredBool(val bool, name string, err error)
-	RequiredEmail(val string, name string, err error)
-	NotNil(val interface{}, name string, err error)
-	RequiredTime(val time.Time, name string, err error)
-	MinInt(val int, n int, name string, err error)
-	MaxInt(val int, n int, name string, err error)
-	MinFloat64(val float64, n float64, name string, err error)
-	MaxFloat64(val float64, n float64, name string, err error)
-	MinChar(val string, n int, name string, err error)
-	MaxChar(val string, n int, name string, err error)
-	Email(val string, name string, err error)
-	Gender(val string, name string, err error)
-	Confirm(val, confirm string, name string, confirmName string, err error)
-	ISO8601DataTime(val string, name string, err error)
-	InString(val string, in []string, name string, err error)
+	RequiredString(val string, name string, err ...error)
+	RequiredBytes(val []byte, name string, err ...error)
+	RequiredInt(val int, name string, err ...error)
+	RequiredFloat64(val float64, name string, err ...error)
+	RequiredBool(val bool, name string, err ...error)
+	RequiredEmail(val string, name string, err ...error)
+	NotNil(val interface{}, name string, err ...error)
+	RequiredTime(val time.Time, name string, err ...error)
+	MinInt(val int, n int, name string, err ...error)
+	MaxInt(val int, n int, name string, err ...error)
+	MinFloat64(val float64, n float64, name string, err ...error)
+	MaxFloat64(val float64, n float64, name string, err ...error)
+	MinChar(val string, n int, name string, err ...error)
+	MaxChar(val string, n int, name string, err ...error)
+	Email(val string, name string, err ...error)
+	Gender(val string, name string, err ...error)
+	Confirm(val, confirm string, name string, confirmName string, err ...error)
+	ISO8601DataTime(val string, name string, err ...error)
+	InString(val string, in []string, name string, err ...error)
 }
 
 type validator struct {
@@ -82,73 +82,73 @@ func (v *validator) GetError() error {
 	return nil
 }
 
-func (v *validator) addError(name string, deferr error, err error) {
-	if err != nil {
-		deferr = err
+func (v *validator) addError(name string, err error, errs []error) {
+	if len(errs) > 0 {
+		err = errs[0]
 	}
 
-	v.errs = append(v.errs, ValidateError{name, deferr})
+	v.errs = append(v.errs, ValidateError{name, err})
 }
 
-func (v *validator) RequiredString(val string, name string, err error) {
+func (v *validator) RequiredString(val string, name string, err ...error) {
 	if len(strings.TrimSpace(val)) == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredBytes(val []byte, name string, err error) {
+func (v *validator) RequiredBytes(val []byte, name string, err ...error) {
 	if len(val) == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredInt(val int, name string, err error) {
+func (v *validator) RequiredInt(val int, name string, err ...error) {
 	if val == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredFloat64(val float64, name string, err error) {
+func (v *validator) RequiredFloat64(val float64, name string, err ...error) {
 	if val == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredBool(val bool, name string, err error) {
+func (v *validator) RequiredBool(val bool, name string, err ...error) {
 	if !val {
 		defaultErr := errors.BadRequestf("%s is required", name)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredEmail(val string, name string, err error) {
+func (v *validator) RequiredEmail(val string, name string, err ...error) {
 	if val == "" {
 		defaultErr := errors.BadRequestf("%s is required", name)
 		v.addError(name, defaultErr, err)
 	}
 
-	v.Email(val, name, err)
+	v.Email(val, name, err...)
 }
 
-func (v *validator) NotNil(val interface{}, name string, err error) {
+func (v *validator) NotNil(val interface{}, name string, err ...error) {
 	if val == nil {
 		defaultErr := errors.BadRequestf("%s is required", name)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredTime(val time.Time, name string, err error) {
+func (v *validator) RequiredTime(val time.Time, name string, err ...error) {
 	if val.IsZero() {
 		defaultErr := errors.BadRequestf("%s is required", name)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) MinInt(val int, n int, name string, err error) {
+func (v *validator) MinInt(val int, n int, name string, err ...error) {
 	if val > n {
 		return
 	}
@@ -157,14 +157,14 @@ func (v *validator) MinInt(val int, n int, name string, err error) {
 	v.addError(name, defaultErr, err)
 }
 
-func (v *validator) MaxInt(val int, n int, name string, err error) {
+func (v *validator) MaxInt(val int, n int, name string, err ...error) {
 	if val > n {
 		defaultErr := errors.BadRequestf("%s should not greater than %d", name, n)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) MinFloat64(val float64, n float64, name string, err error) {
+func (v *validator) MinFloat64(val float64, n float64, name string, err ...error) {
 	if val < n {
 		return
 	}
@@ -173,7 +173,7 @@ func (v *validator) MinFloat64(val float64, n float64, name string, err error) {
 	v.addError(name, defaultErr, err)
 }
 
-func (v *validator) MaxFloat64(val float64, n float64, name string, err error) {
+func (v *validator) MaxFloat64(val float64, n float64, name string, err ...error) {
 	if val > n {
 		return
 	}
@@ -181,21 +181,21 @@ func (v *validator) MaxFloat64(val float64, n float64, name string, err error) {
 	v.addError(name, defaultErr, err)
 }
 
-func (v *validator) MinChar(val string, n int, name string, err error) {
+func (v *validator) MinChar(val string, n int, name string, err ...error) {
 	if utf8.RuneCountInString(val) < n {
 		defaultErr := errors.BadRequestf("%s should be atleast %d character", name, n)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) MaxChar(val string, n int, name string, err error) {
+func (v *validator) MaxChar(val string, n int, name string, err ...error) {
 	if utf8.RuneCountInString(val) > n {
 		defaultErr := errors.BadRequestf("%s should not greater than %d character", name, n)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) Email(val string, name string, err error) {
+func (v *validator) Email(val string, name string, err ...error) {
 	if val == "" {
 		return
 	}
@@ -205,21 +205,21 @@ func (v *validator) Email(val string, name string, err error) {
 	}
 }
 
-func (v *validator) Gender(val string, name string, err error) {
+func (v *validator) Gender(val string, name string, err ...error) {
 	if val != `male` && val != `female` {
 		defaultErr := errors.BadRequestf("%s should be male or female", name)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) Confirm(val, confirm string, name string, confirmName string, err error) {
+func (v *validator) Confirm(val, confirm string, name string, confirmName string, err ...error) {
 	if val != confirm {
 		defaultErr := errors.BadRequestf("%s is not matched %s", name, confirmName)
 		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) ISO8601DataTime(val string, name string, err error) {
+func (v *validator) ISO8601DataTime(val string, name string, err ...error) {
 	if val == "" {
 		return
 	}
@@ -229,7 +229,7 @@ func (v *validator) ISO8601DataTime(val string, name string, err error) {
 	}
 }
 
-func (v *validator) InString(val string, in []string, name string, err error) {
+func (v *validator) InString(val string, in []string, name string, err ...error) {
 	for _, k := range in {
 		if k == val {
 			return

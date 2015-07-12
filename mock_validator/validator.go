@@ -36,60 +36,60 @@ func (m *MockValidator) GetError() error {
 
 	return r0
 }
-func (m *MockValidator) RequiredString(val string, name string, err error) {
+func (m *MockValidator) RequiredString(val string, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) RequiredBytes(val []byte, name string, err error) {
+func (m *MockValidator) RequiredBytes(val []byte, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) RequiredInt(val int, name string, err error) {
+func (m *MockValidator) RequiredInt(val int, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) RequiredFloat64(val float64, name string, err error) {
+func (m *MockValidator) RequiredFloat64(val float64, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) RequiredBool(val bool, name string, err error) {
+func (m *MockValidator) RequiredBool(val bool, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) RequiredEmail(val string, name string, err error) {
+func (m *MockValidator) RequiredEmail(val string, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) NotNil(val interface{}, name string, err error) {
+func (m *MockValidator) NotNil(val interface{}, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) RequiredTime(val time.Time, name string, err error) {
+func (m *MockValidator) RequiredTime(val time.Time, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) MinInt(val int, n int, name string, err error) {
+func (m *MockValidator) MinInt(val int, n int, name string, err ...error) {
 	m.Called(val, n, name, err)
 }
-func (m *MockValidator) MaxInt(val int, n int, name string, err error) {
+func (m *MockValidator) MaxInt(val int, n int, name string, err ...error) {
 	m.Called(val, n, name, err)
 }
-func (m *MockValidator) MinFloat64(val float64, n float64, name string, err error) {
+func (m *MockValidator) MinFloat64(val float64, n float64, name string, err ...error) {
 	m.Called(val, n, name, err)
 }
-func (m *MockValidator) MaxFloat64(val float64, n float64, name string, err error) {
+func (m *MockValidator) MaxFloat64(val float64, n float64, name string, err ...error) {
 	m.Called(val, n, name, err)
 }
-func (m *MockValidator) MinChar(val string, n int, name string, err error) {
+func (m *MockValidator) MinChar(val string, n int, name string, err ...error) {
 	m.Called(val, n, name, err)
 }
-func (m *MockValidator) MaxChar(val string, n int, name string, err error) {
+func (m *MockValidator) MaxChar(val string, n int, name string, err ...error) {
 	m.Called(val, n, name, err)
 }
-func (m *MockValidator) Email(val string, name string, err error) {
+func (m *MockValidator) Email(val string, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) Gender(val string, name string, err error) {
+func (m *MockValidator) Gender(val string, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) Confirm(val string, confirm string, name string, confirmName string, err error) {
+func (m *MockValidator) Confirm(val string, confirm string, name string, confirmName string, err ...error) {
 	m.Called(val, confirm, name, confirmName, err)
 }
-func (m *MockValidator) ISO8601DataTime(val string, name string, err error) {
+func (m *MockValidator) ISO8601DataTime(val string, name string, err ...error) {
 	m.Called(val, name, err)
 }
-func (m *MockValidator) InString(val string, in []string, name string, err error) {
+func (m *MockValidator) InString(val string, in []string, name string, err ...error) {
 	m.Called(val, in, name, err)
 }
