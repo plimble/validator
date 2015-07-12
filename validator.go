@@ -3,6 +3,7 @@ package validator
 //go:generate mockery -name Validator
 
 import (
+	"github.com/plimble/errors"
 	"regexp"
 	"strings"
 	"time"
@@ -23,26 +24,25 @@ type Validator interface {
 	HasError() bool
 	Messages() map[string]string
 	GetError() error
-	RequiredString(val string, err error, name ...string)
-	RequiredBytes(val []byte, err error, name ...string)
-	RequiredInt(val int, err error, name ...string)
-	RequiredFloat64(val float64, err error, name ...string)
-	RequiredBool(val bool, err error, name ...string)
-	RequiredEmail(val string, err error, name ...string)
-	NotNil(val interface{}, err error, name ...string)
-	RequiredTime(val time.Time, err error, name ...string)
-	MinInt(val int, n int, err error, name ...string)
-	MaxInt(val int, n int, err error, name ...string)
-	MinFloat64(val float64, n float64, err error, name ...string)
-	MaxFloat64(val float64, n float64, err error, name ...string)
-	MinChar(val string, n int, err error, name ...string)
-	MaxChar(val string, n int, err error, name ...string)
-	Email(val string, err error, name ...string)
-	Gender(val string, err error, name ...string)
-	Confirm(val, confirm string, err error, name ...string)
-	ISO8601DataTime(val string, err error, name ...string)
-	Length(val int, atleast int, err error, name ...string)
-	InString(val string, in []string, err error, name ...string)
+	RequiredString(val string, name string, err ...error)
+	RequiredBytes(val []byte, name string, err ...error)
+	RequiredInt(val int, name string, err ...error)
+	RequiredFloat64(val float64, name string, err ...error)
+	RequiredBool(val bool, name string, err ...error)
+	RequiredEmail(val string, name string, err ...error)
+	NotNil(val interface{}, name string, err ...error)
+	RequiredTime(val time.Time, name string, err ...error)
+	MinInt(val int, n int, name string, err ...error)
+	MaxInt(val int, n int, name string, err ...error)
+	MinFloat64(val float64, n float64, name string, err ...error)
+	MaxFloat64(val float64, n float64, name string, err ...error)
+	MinChar(val string, n int, name string, err ...error)
+	MaxChar(val string, n int, name string, err ...error)
+	Email(val string, name string, err ...error)
+	Gender(val string, name string, err ...error)
+	Confirm(val, confirm string, name string, confirmName string, err ...error)
+	ISO8601DataTime(val string, name string, err ...error)
+	InString(val string, in []string, name string, err ...error)
 }
 
 type validator struct {
@@ -82,148 +82,160 @@ func (v *validator) GetError() error {
 	return nil
 }
 
-func (v *validator) addError(err error, name []string) {
-	n := ""
-	if len(name) > 0 {
-		n = name[0]
+func (v *validator) addError(name string, err error, errs []error) {
+	if len(errs) > 0 {
+		err = errs[0]
 	}
 
-	v.errs = append(v.errs, ValidateError{n, err})
+	v.errs = append(v.errs, ValidateError{name, err})
 }
 
-func (v *validator) RequiredString(val string, err error, name ...string) {
+func (v *validator) RequiredString(val string, name string, err ...error) {
 	if len(strings.TrimSpace(val)) == 0 {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredBytes(val []byte, err error, name ...string) {
+func (v *validator) RequiredBytes(val []byte, name string, err ...error) {
 	if len(val) == 0 {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredInt(val int, err error, name ...string) {
+func (v *validator) RequiredInt(val int, name string, err ...error) {
 	if val == 0 {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredFloat64(val float64, err error, name ...string) {
+func (v *validator) RequiredFloat64(val float64, name string, err ...error) {
 	if val == 0 {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredBool(val bool, err error, name ...string) {
+func (v *validator) RequiredBool(val bool, name string, err ...error) {
 	if !val {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredEmail(val string, err error, name ...string) {
+func (v *validator) RequiredEmail(val string, name string, err ...error) {
 	if val == "" {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
 	}
 
-	v.Email(val, err, name...)
+	v.Email(val, name, err...)
 }
 
-func (v *validator) NotNil(val interface{}, err error, name ...string) {
+func (v *validator) NotNil(val interface{}, name string, err ...error) {
 	if val == nil {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) RequiredTime(val time.Time, err error, name ...string) {
+func (v *validator) RequiredTime(val time.Time, name string, err ...error) {
 	if val.IsZero() {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) MinInt(val int, n int, err error, name ...string) {
+func (v *validator) MinInt(val int, n int, name string, err ...error) {
 	if val > n {
 		return
 	}
 
-	v.addError(err, name)
+	defaultErr := errors.BadRequestf("%s should be atleast %d", name, n)
+	v.addError(name, defaultErr, err)
 }
 
-func (v *validator) MaxInt(val int, n int, err error, name ...string) {
+func (v *validator) MaxInt(val int, n int, name string, err ...error) {
 	if val > n {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s should not greater than %d", name, n)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) MinFloat64(val float64, n float64, err error, name ...string) {
+func (v *validator) MinFloat64(val float64, n float64, name string, err ...error) {
 	if val < n {
 		return
 	}
 
-	v.addError(err, name)
+	defaultErr := errors.BadRequestf("%s should be atleast %d", name, n)
+	v.addError(name, defaultErr, err)
 }
 
-func (v *validator) MaxFloat64(val float64, n float64, err error, name ...string) {
+func (v *validator) MaxFloat64(val float64, n float64, name string, err ...error) {
 	if val > n {
 		return
 	}
-	v.addError(err, name)
+	defaultErr := errors.BadRequestf("%s should not greater than %d", name, n)
+	v.addError(name, defaultErr, err)
 }
 
-func (v *validator) MinChar(val string, n int, err error, name ...string) {
+func (v *validator) MinChar(val string, n int, name string, err ...error) {
 	if utf8.RuneCountInString(val) < n {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s should be atleast %d character", name, n)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) MaxChar(val string, n int, err error, name ...string) {
+func (v *validator) MaxChar(val string, n int, name string, err ...error) {
 	if utf8.RuneCountInString(val) > n {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s should not greater than %d character", name, n)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) Email(val string, err error, name ...string) {
+func (v *validator) Email(val string, name string, err ...error) {
 	if val == "" {
 		return
 	}
 	if !emailPatern.MatchString(val) {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s invalid email format", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) Gender(val string, err error, name ...string) {
+func (v *validator) Gender(val string, name string, err ...error) {
 	if val != `male` && val != `female` {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s should be male or female", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) Confirm(val, confirm string, err error, name ...string) {
+func (v *validator) Confirm(val, confirm string, name string, confirmName string, err ...error) {
 	if val != confirm {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is not matched %s", name, confirmName)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) ISO8601DataTime(val string, err error, name ...string) {
+func (v *validator) ISO8601DataTime(val string, name string, err ...error) {
 	if val == "" {
 		return
 	}
 	if !dateiso8601Patern.MatchString(val) {
-		v.addError(err, name)
+		defaultErr := errors.BadRequestf("%s is invalid date format", name)
+		v.addError(name, defaultErr, err)
 	}
 }
 
-func (v *validator) Length(val int, atleast int, err error, name ...string) {
-	if val <= atleast {
-		v.addError(err, name)
-	}
-}
-
-func (v *validator) InString(val string, in []string, err error, name ...string) {
+func (v *validator) InString(val string, in []string, name string, err ...error) {
 	for _, k := range in {
 		if k == val {
 			return
 		}
 	}
 
-	v.addError(err, name)
+	defaultErr := errors.BadRequestf("%s is not in", strings.Join(in, ","))
+	v.addError(name, defaultErr, err)
 }
