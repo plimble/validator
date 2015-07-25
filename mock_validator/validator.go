@@ -45,6 +45,9 @@ func (m *MockValidator) RequiredBytes(val []byte, name string, err ...error) {
 func (m *MockValidator) RequiredInt(val int, name string, err ...error) {
 	m.Called(val, name, err)
 }
+func (m *MockValidator) RequiredInt64(val int64, name string, err ...error) {
+	m.Called(val, name, err)
+}
 func (m *MockValidator) RequiredFloat64(val float64, name string, err ...error) {
 	m.Called(val, name, err)
 }
@@ -64,6 +67,12 @@ func (m *MockValidator) MinInt(val int, n int, name string, err ...error) {
 	m.Called(val, n, name, err)
 }
 func (m *MockValidator) MaxInt(val int, n int, name string, err ...error) {
+	m.Called(val, n, name, err)
+}
+func (m *MockValidator) MinInt64(val int64, n int64, name string, err ...error) {
+	m.Called(val, n, name, err)
+}
+func (m *MockValidator) MaxInt64(val int64, n int64, name string, err ...error) {
 	m.Called(val, n, name, err)
 }
 func (m *MockValidator) MinFloat64(val float64, n float64, name string, err ...error) {

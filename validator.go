@@ -27,6 +27,7 @@ type Validator interface {
 	RequiredString(val string, name string, err ...error)
 	RequiredBytes(val []byte, name string, err ...error)
 	RequiredInt(val int, name string, err ...error)
+	RequiredInt64(val int64, name string, err ...error)
 	RequiredFloat64(val float64, name string, err ...error)
 	RequiredBool(val bool, name string, err ...error)
 	RequiredEmail(val string, name string, err ...error)
@@ -34,6 +35,8 @@ type Validator interface {
 	RequiredTime(val time.Time, name string, err ...error)
 	MinInt(val int, n int, name string, err ...error)
 	MaxInt(val int, n int, name string, err ...error)
+	MinInt64(val int64, n int64, name string, err ...error)
+	MaxInt64(val int64, n int64, name string, err ...error)
 	MinFloat64(val float64, n float64, name string, err ...error)
 	MaxFloat64(val float64, n float64, name string, err ...error)
 	MinChar(val string, n int, name string, err ...error)
@@ -111,6 +114,13 @@ func (v *validator) RequiredInt(val int, name string, err ...error) {
 	}
 }
 
+func (v *validator) RequiredInt64(val int64, name string, err ...error) {
+	if val == 0 {
+		defaultErr := errors.BadRequestf("%s is required", name)
+		v.addError(name, defaultErr, err)
+	}
+}
+
 func (v *validator) RequiredFloat64(val float64, name string, err ...error) {
 	if val == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
@@ -158,6 +168,22 @@ func (v *validator) MinInt(val int, n int, name string, err ...error) {
 }
 
 func (v *validator) MaxInt(val int, n int, name string, err ...error) {
+	if val > n {
+		defaultErr := errors.BadRequestf("%s should not greater than %d", name, n)
+		v.addError(name, defaultErr, err)
+	}
+}
+
+func (v *validator) MinInt64(val int64, n int64, name string, err ...error) {
+	if val > n {
+		return
+	}
+
+	defaultErr := errors.BadRequestf("%s should be atleast %d", name, n)
+	v.addError(name, defaultErr, err)
+}
+
+func (v *validator) MaxInt64(val int64, n int64, name string, err ...error) {
 	if val > n {
 		defaultErr := errors.BadRequestf("%s should not greater than %d", name, n)
 		v.addError(name, defaultErr, err)
