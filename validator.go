@@ -1,6 +1,6 @@
 package validator
 
-//go:generate mockery -name Validator
+//go:generate mockery -name Validator -output mock_validator
 
 import (
 	"github.com/plimble/errors"
