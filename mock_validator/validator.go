@@ -46,6 +46,12 @@ func (_m *Validator) GetError() error {
 
 	return r0
 }
+func (_m *Validator) AddError(name string, err error) {
+	_m.Called(name, err)
+}
+func (_m *Validator) AddErrorMsg(name string, format string, args ...interface{}) {
+	_m.Called(name, format, args)
+}
 func (_m *Validator) RequiredString(val string, name string, err ...error) {
 	_m.Called(val, name, err)
 }

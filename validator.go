@@ -24,7 +24,8 @@ type Validator interface {
 	HasError() bool
 	Messages() map[string]string
 	GetError() error
-	AddError(name, format string, args ...interface{})
+	AddError(name string, err error)
+	AddErrorMsg(name, format string, args ...interface{})
 	RequiredString(val string, name string, err ...error)
 	RequiredBytes(val []byte, name string, err ...error)
 	RequiredInt(val int, name string, err ...error)
@@ -94,7 +95,11 @@ func (v *validator) add(name string, err error, errs []error) {
 	v.errs = append(v.errs, ValidateError{name, err})
 }
 
-func (v *validator) AddError(name, format string, args ...interface{}) {
+func (v *validator) AddError(name string, err error) {
+	v.errs = append(v.errs, ValidateError{name, err})
+}
+
+func (v *validator) AddErrorMsg(name, format string, args ...interface{}) {
 	v.errs = append(v.errs, ValidateError{name, errors.BadRequestf(format, args...)})
 }
 
