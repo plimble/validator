@@ -24,6 +24,7 @@ type Validator interface {
 	HasError() bool
 	Messages() map[string]string
 	GetError() error
+	AddError(name, format string, args ...interface{})
 	RequiredString(val string, name string, err ...error)
 	RequiredBytes(val []byte, name string, err ...error)
 	RequiredInt(val int, name string, err ...error)
@@ -85,7 +86,7 @@ func (v *validator) GetError() error {
 	return nil
 }
 
-func (v *validator) addError(name string, err error, errs []error) {
+func (v *validator) add(name string, err error, errs []error) {
 	if len(errs) > 0 {
 		err = errs[0]
 	}
@@ -93,52 +94,56 @@ func (v *validator) addError(name string, err error, errs []error) {
 	v.errs = append(v.errs, ValidateError{name, err})
 }
 
+func (v *validator) AddError(name, format string, args ...interface{}) {
+	v.errs = append(v.errs, ValidateError{name, errors.BadRequestf(format, args...)})
+}
+
 func (v *validator) RequiredString(val string, name string, err ...error) {
 	if len(strings.TrimSpace(val)) == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) RequiredBytes(val []byte, name string, err ...error) {
 	if len(val) == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) RequiredInt(val int, name string, err ...error) {
 	if val == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) RequiredInt64(val int64, name string, err ...error) {
 	if val == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) RequiredFloat64(val float64, name string, err ...error) {
 	if val == 0 {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) RequiredBool(val bool, name string, err ...error) {
 	if !val {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) RequiredEmail(val string, name string, err ...error) {
 	if val == "" {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 
 	v.Email(val, name, err...)
@@ -147,14 +152,14 @@ func (v *validator) RequiredEmail(val string, name string, err ...error) {
 func (v *validator) NotNil(val interface{}, name string, err ...error) {
 	if val == nil {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) RequiredTime(val time.Time, name string, err ...error) {
 	if val.IsZero() {
 		defaultErr := errors.BadRequestf("%s is required", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
@@ -164,13 +169,13 @@ func (v *validator) MinInt(val int, n int, name string, err ...error) {
 	}
 
 	defaultErr := errors.BadRequestf("%s should be atleast %d", name, n)
-	v.addError(name, defaultErr, err)
+	v.add(name, defaultErr, err)
 }
 
 func (v *validator) MaxInt(val int, n int, name string, err ...error) {
 	if val > n {
 		defaultErr := errors.BadRequestf("%s should not greater than %d", name, n)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
@@ -180,13 +185,13 @@ func (v *validator) MinInt64(val int64, n int64, name string, err ...error) {
 	}
 
 	defaultErr := errors.BadRequestf("%s should be atleast %d", name, n)
-	v.addError(name, defaultErr, err)
+	v.add(name, defaultErr, err)
 }
 
 func (v *validator) MaxInt64(val int64, n int64, name string, err ...error) {
 	if val > n {
 		defaultErr := errors.BadRequestf("%s should not greater than %d", name, n)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
@@ -196,7 +201,7 @@ func (v *validator) MinFloat64(val float64, n float64, name string, err ...error
 	}
 
 	defaultErr := errors.BadRequestf("%s should be atleast %d", name, n)
-	v.addError(name, defaultErr, err)
+	v.add(name, defaultErr, err)
 }
 
 func (v *validator) MaxFloat64(val float64, n float64, name string, err ...error) {
@@ -204,20 +209,20 @@ func (v *validator) MaxFloat64(val float64, n float64, name string, err ...error
 		return
 	}
 	defaultErr := errors.BadRequestf("%s should not greater than %d", name, n)
-	v.addError(name, defaultErr, err)
+	v.add(name, defaultErr, err)
 }
 
 func (v *validator) MinChar(val string, n int, name string, err ...error) {
 	if utf8.RuneCountInString(val) < n {
 		defaultErr := errors.BadRequestf("%s should be atleast %d character", name, n)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) MaxChar(val string, n int, name string, err ...error) {
 	if utf8.RuneCountInString(val) > n {
 		defaultErr := errors.BadRequestf("%s should not greater than %d character", name, n)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
@@ -227,21 +232,21 @@ func (v *validator) Email(val string, name string, err ...error) {
 	}
 	if !emailPatern.MatchString(val) {
 		defaultErr := errors.BadRequestf("%s invalid email format", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) Gender(val string, name string, err ...error) {
 	if val != `male` && val != `female` {
 		defaultErr := errors.BadRequestf("%s should be male or female", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
 func (v *validator) Confirm(val, confirm string, name string, confirmName string, err ...error) {
 	if val != confirm {
 		defaultErr := errors.BadRequestf("%s is not matched %s", name, confirmName)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
@@ -251,7 +256,7 @@ func (v *validator) ISO8601DataTime(val string, name string, err ...error) {
 	}
 	if !dateiso8601Patern.MatchString(val) {
 		defaultErr := errors.BadRequestf("%s is invalid date format", name)
-		v.addError(name, defaultErr, err)
+		v.add(name, defaultErr, err)
 	}
 }
 
@@ -263,5 +268,5 @@ func (v *validator) InString(val string, in []string, name string, err ...error)
 	}
 
 	defaultErr := errors.BadRequestf("%s is not in", strings.Join(in, ","))
-	v.addError(name, defaultErr, err)
+	v.add(name, defaultErr, err)
 }
