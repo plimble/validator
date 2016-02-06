@@ -23,7 +23,7 @@ type ValidateError struct {
 type Validator interface {
 	HasError() bool
 	Messages() map[string]string
-	GetError() error
+	GetError() errors.Error
 	AddError(name string, err error)
 	AddErrorMsg(name, format string, args ...interface{})
 	RequiredString(val string, name string, err ...error)
@@ -79,9 +79,9 @@ func (v *validator) Messages() map[string]string {
 	return msgs
 }
 
-func (v *validator) GetError() error {
+func (v *validator) GetError() errors.Error {
 	if len(v.errs) > 0 {
-		return v.errs[0].Err
+		return errors.BadRequest(v.errs[0].Err.Error())
 	}
 
 	return nil
