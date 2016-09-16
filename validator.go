@@ -30,6 +30,7 @@ type Validator interface {
 	RequiredString(val string, name string, err ...error)
 	RequiredBytes(val []byte, name string, err ...error)
 	RequiredInt(val int, name string, err ...error)
+	RequiredInt32(val int32, name string, err ...error)
 	RequiredInt64(val int64, name string, err ...error)
 	RequiredFloat64(val float64, name string, err ...error)
 	RequiredBool(val bool, name string, err ...error)
@@ -49,6 +50,9 @@ type Validator interface {
 	Confirm(val, confirm string, name string, confirmName string, err ...error)
 	ISO8601DataTime(val string, name string, err ...error)
 	InString(val string, in []string, name string, err ...error)
+	RangeInt(val, min, max int, name string, err ...error)
+	RangeInt32(val, min, max int, name string, err ...error)
+	RangeInt64(val, min, max int, name string, err ...error)
 }
 
 type validator struct {
@@ -119,6 +123,13 @@ func (v *validator) RequiredBytes(val []byte, name string, err ...error) {
 }
 
 func (v *validator) RequiredInt(val int, name string, err ...error) {
+	if val == 0 {
+		defaultErr := fmt.Errorf("%s is required", name)
+		v.add(name, defaultErr, err)
+	}
+}
+
+func (v *validator) RequiredInt32(val int32, name string, err ...error) {
 	if val == 0 {
 		defaultErr := fmt.Errorf("%s is required", name)
 		v.add(name, defaultErr, err)
@@ -274,5 +285,32 @@ func (v *validator) InString(val string, in []string, name string, err ...error)
 	}
 
 	defaultErr := fmt.Errorf("%s is not in", strings.Join(in, ","))
+	v.add(name, defaultErr, err)
+}
+
+func (v *validator) RangeInt(val, min, max int, name string, err ...error) {
+	if val >= min && val <= max {
+		return
+	}
+
+	defaultErr := fmt.Errorf("%s is required", name)
+	v.add(name, defaultErr, err)
+}
+
+func (v *validator) RangeInt32(val, min, max int, name string, err ...error) {
+	if val >= min && val <= max {
+		return
+	}
+
+	defaultErr := fmt.Errorf("%s is required", name)
+	v.add(name, defaultErr, err)
+}
+
+func (v *validator) RangeInt64(val, min, max int, name string, err ...error) {
+	if val >= min && val <= max {
+		return
+	}
+
+	defaultErr := fmt.Errorf("%s is required", name)
 	v.add(name, defaultErr, err)
 }
