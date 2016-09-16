@@ -51,8 +51,8 @@ type Validator interface {
 	ISO8601DataTime(val string, name string, err ...error)
 	InString(val string, in []string, name string, err ...error)
 	RangeInt(val, min, max int, name string, err ...error)
-	RangeInt32(val, min, max int, name string, err ...error)
-	RangeInt64(val, min, max int, name string, err ...error)
+	RangeInt32(val, min, max int32, name string, err ...error)
+	RangeInt64(val, min, max int64, name string, err ...error)
 }
 
 type validator struct {
@@ -297,7 +297,7 @@ func (v *validator) RangeInt(val, min, max int, name string, err ...error) {
 	v.add(name, defaultErr, err)
 }
 
-func (v *validator) RangeInt32(val, min, max int, name string, err ...error) {
+func (v *validator) RangeInt32(val, min, max int32, name string, err ...error) {
 	if val >= min && val <= max {
 		return
 	}
@@ -306,7 +306,7 @@ func (v *validator) RangeInt32(val, min, max int, name string, err ...error) {
 	v.add(name, defaultErr, err)
 }
 
-func (v *validator) RangeInt64(val, min, max int, name string, err ...error) {
+func (v *validator) RangeInt64(val, min, max int64, name string, err ...error) {
 	if val >= min && val <= max {
 		return
 	}
