@@ -293,7 +293,7 @@ func (v *validator) RangeInt(val, min, max int, name string, err ...error) {
 		return
 	}
 
-	defaultErr := fmt.Errorf("%s is required", name)
+	defaultErr := fmt.Errorf("%s is out of range", name)
 	v.add(name, defaultErr, err)
 }
 
@@ -302,7 +302,7 @@ func (v *validator) RangeInt32(val, min, max int32, name string, err ...error) {
 		return
 	}
 
-	defaultErr := fmt.Errorf("%s is required", name)
+	defaultErr := fmt.Errorf("%s is out of range", name)
 	v.add(name, defaultErr, err)
 }
 
@@ -311,6 +311,6 @@ func (v *validator) RangeInt64(val, min, max int64, name string, err ...error) {
 		return
 	}
 
-	defaultErr := fmt.Errorf("%s is required", name)
+	defaultErr := fmt.Errorf("%s is out of range", name)
 	v.add(name, defaultErr, err)
 }
