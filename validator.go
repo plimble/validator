@@ -29,6 +29,7 @@ type Validator interface {
 	Messages() map[string]string
 	GetError() errors.Error
 	GetMsg() string
+	Wrap(errors.Error) errors.Error
 	AddError(name string, err errors.Error)
 	AddErrorMsg(name, format string, args ...interface{})
 	RequiredString(val string, name string, err ...errors.Error)
@@ -102,6 +103,14 @@ func (v *validator) GetMsg() string {
 	}
 
 	return emptyStr
+}
+
+func (v *validator) Wrap(err errors.Error) errors.Error {
+	if len(v.errs) > 0 {
+		return err.WithMessage(v.errs[0].Err.Error())
+	}
+
+	return nil
 }
 
 func (v *validator) add(name string, err error, errs []errors.Error) {
