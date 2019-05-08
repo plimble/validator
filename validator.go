@@ -66,12 +66,12 @@ type Validator interface {
     RangeInt64(val, min, max int64, name string, err ...errors.Error)
     RangeFloat32(val, min, max float32, name string, err ...errors.Error)
     RangeFloat64(val, min, max float64, name string, err ...errors.Error)
-    ArrayLenString(val []string, nLen int, name string, err ...errors.Error)
-    ArrayLenInt(val []int, nLen int, name string, err ...errors.Error)
-    ArrayLenInt32(val []int32, nLen int, name string, err ...errors.Error)
-    ArrayLenInt64(val []int64, nLen int, name string, err ...errors.Error)
-    ArrayLenFloat32(val []float32, nLen int, name string, err ...errors.Error)
-    ArrayLenFloat64(val []float64, nLen int, name string, err ...errors.Error)
+    LenArrayString(val []string, nLen int, name string, err ...errors.Error)
+    LenArrayInt(val []int, nLen int, name string, err ...errors.Error)
+    LenArrayInt32(val []int32, nLen int, name string, err ...errors.Error)
+    LenArrayInt64(val []int64, nLen int, name string, err ...errors.Error)
+    LenArrayFloat32(val []float32, nLen int, name string, err ...errors.Error)
+    LenArrayFloat64(val []float64, nLen int, name string, err ...errors.Error)
     PointerRequiredEmail(val *string, name string, err ...errors.Error)
     PointerRequiredString(val *string, name string, err ...errors.Error)
     PointerRequiredInt(val *int, name string, err ...errors.Error)
@@ -387,7 +387,7 @@ func (v *validator) RangeFloat64(val, min, max float64, name string, err ...erro
     v.add(name, defaultErr, err)
 }
 
-func (v *validator) ArrayLenString(val []string, nLen int, name string, err ...errors.Error) {
+func (v *validator) LenArrayString(val []string, nLen int, name string, err ...errors.Error) {
     if len(val) == nLen {
         return
     }
@@ -395,7 +395,7 @@ func (v *validator) ArrayLenString(val []string, nLen int, name string, err ...e
     defaultErr := fmt.Errorf("%s must len equal to %d", name, nLen)
     v.add(name, defaultErr, err)
 }
-func (v *validator) ArrayLenInt(val []int, nLen int, name string, err ...errors.Error) {
+func (v *validator) LenArrayInt(val []int, nLen int, name string, err ...errors.Error) {
     if len(val) == nLen {
         return
     }
@@ -403,7 +403,7 @@ func (v *validator) ArrayLenInt(val []int, nLen int, name string, err ...errors.
     defaultErr := fmt.Errorf("%s must len equal to %d", name, nLen)
     v.add(name, defaultErr, err)
 }
-func (v *validator) ArrayLenInt32(val []int32, nLen int, name string, err ...errors.Error) {
+func (v *validator) LenArrayInt32(val []int32, nLen int, name string, err ...errors.Error) {
     if len(val) == nLen {
         return
     }
@@ -411,7 +411,7 @@ func (v *validator) ArrayLenInt32(val []int32, nLen int, name string, err ...err
     defaultErr := fmt.Errorf("%s must len equal to %d", name, nLen)
     v.add(name, defaultErr, err)
 }
-func (v *validator) ArrayLenInt64(val []int64, nLen int, name string, err ...errors.Error) {
+func (v *validator) LenArrayInt64(val []int64, nLen int, name string, err ...errors.Error) {
     if len(val) == nLen {
         return
     }
@@ -419,7 +419,7 @@ func (v *validator) ArrayLenInt64(val []int64, nLen int, name string, err ...err
     defaultErr := fmt.Errorf("%s must len equal to %d", name, nLen)
     v.add(name, defaultErr, err)
 }
-func (v *validator) ArrayLenFloat32(val []float32, nLen int, name string, err ...errors.Error) {
+func (v *validator) LenArrayFloat32(val []float32, nLen int, name string, err ...errors.Error) {
     if len(val) == nLen {
         return
     }
@@ -427,7 +427,7 @@ func (v *validator) ArrayLenFloat32(val []float32, nLen int, name string, err ..
     defaultErr := fmt.Errorf("%s must len equal to %d", name, nLen)
     v.add(name, defaultErr, err)
 }
-func (v *validator) ArrayLenFloat64(val []float64, nLen int, name string, err ...errors.Error) {
+func (v *validator) LenArrayFloat64(val []float64, nLen int, name string, err ...errors.Error) {
     if len(val) == nLen {
         return
     }
