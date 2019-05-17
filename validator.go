@@ -80,6 +80,11 @@ type Validator interface {
     PointerRequiredFloat32(val *float32, name string, err ...errors.Error)
     PointerRequiredFloat64(val *float64, name string, err ...errors.Error)
     PointerRequiredBool(val *bool, name string, err ...errors.Error)
+    PointerRangeInt(val *int, min, max int, name string, err ...errors.Error)
+    PointerRangeInt32(val *int32, min, max int32, name string, err ...errors.Error)
+    PointerRangeInt64(val *int64, min, max int64, name string, err ...errors.Error)
+    PointerRangeFloat32(val *float32, min, max float32, name string, err ...errors.Error)
+    PointerRangeFloat64(val *float64, min, max float64, name string, err ...errors.Error)
 }
 
 type validator struct {
@@ -475,4 +480,44 @@ func (v *validator) PointerRequiredBool(val *bool, name string, err ...errors.Er
     if val != nil {
         v.RequiredBool(*val, name)
     }
+}
+func (v *validator) PointerRangeInt(val *int, min, max int, name string, err ...errors.Error) {
+    if *val >= min && *val <= max {
+        return
+    }
+
+    defaultErr := fmt.Errorf("%s is out of range", name)
+    v.add(name, defaultErr, err)
+}
+func (v *validator) PointerRangeInt32(val *int32, min, max int32, name string, err ...errors.Error) {
+    if *val >= min && *val <= max {
+        return
+    }
+
+    defaultErr := fmt.Errorf("%s is out of range", name)
+    v.add(name, defaultErr, err)
+}
+func (v *validator) PointerRangeInt64(val *int64, min, max int64, name string, err ...errors.Error) {
+    if *val >= min && *val <= max {
+        return
+    }
+
+    defaultErr := fmt.Errorf("%s is out of range", name)
+    v.add(name, defaultErr, err)
+}
+func (v *validator) PointerRangeFloat32(val *float32, min, max float32, name string, err ...errors.Error) {
+    if *val >= min && *val <= max {
+        return
+    }
+
+    defaultErr := fmt.Errorf("%s is out of range", name)
+    v.add(name, defaultErr, err)
+}
+func (v *validator) PointerRangeFloat64(val *float64, min, max float64, name string, err ...errors.Error) {
+    if *val >= min && *val <= max {
+        return
+    }
+
+    defaultErr := fmt.Errorf("%s is out of range", name)
+    v.add(name, defaultErr, err)
 }
