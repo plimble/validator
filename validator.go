@@ -482,7 +482,7 @@ func (v *validator) PointerRequiredBool(val *bool, name string, err ...errors.Er
     }
 }
 func (v *validator) PointerRangeInt(val *int, min, max int, name string, err ...errors.Error) {
-    if *val >= min && *val <= max {
+    if val == nil || (*val >= min && *val <= max) {
         return
     }
 
@@ -490,7 +490,7 @@ func (v *validator) PointerRangeInt(val *int, min, max int, name string, err ...
     v.add(name, defaultErr, err)
 }
 func (v *validator) PointerRangeInt32(val *int32, min, max int32, name string, err ...errors.Error) {
-    if *val >= min && *val <= max {
+    if val == nil || *val >= min && *val <= max {
         return
     }
 
@@ -498,7 +498,7 @@ func (v *validator) PointerRangeInt32(val *int32, min, max int32, name string, e
     v.add(name, defaultErr, err)
 }
 func (v *validator) PointerRangeInt64(val *int64, min, max int64, name string, err ...errors.Error) {
-    if *val >= min && *val <= max {
+    if val == nil || *val >= min && *val <= max {
         return
     }
 
@@ -506,7 +506,7 @@ func (v *validator) PointerRangeInt64(val *int64, min, max int64, name string, e
     v.add(name, defaultErr, err)
 }
 func (v *validator) PointerRangeFloat32(val *float32, min, max float32, name string, err ...errors.Error) {
-    if *val >= min && *val <= max {
+    if val == nil || *val >= min && *val <= max {
         return
     }
 
@@ -514,7 +514,7 @@ func (v *validator) PointerRangeFloat32(val *float32, min, max float32, name str
     v.add(name, defaultErr, err)
 }
 func (v *validator) PointerRangeFloat64(val *float64, min, max float64, name string, err ...errors.Error) {
-    if *val >= min && *val <= max {
+    if val == nil || *val >= min && *val <= max {
         return
     }
 
